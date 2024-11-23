@@ -1,7 +1,5 @@
-// Variables
 let id = null, condition = null, page = 1, query = '', limit = 5, sortBy = '_id', sortMode = 'asc';
 
-// Support functions
 function getId(_id) {
     id = _id;
 }
@@ -40,31 +38,25 @@ const sortNameDesc = (name) => {
 
 const toggleSort = (field) => {
     if (sortBy === field) {
-        // Toggle sorting mode
         sortMode = sortMode === 'asc' ? 'desc' : 'asc';
     } else {
-        // Set new sorting field
         sortBy = field;
-        sortMode = 'asc'; // Default to ascending
+        sortMode = 'asc';
     }
 
-    // Update icons and header texts
     document.querySelectorAll('th button').forEach((btn) => {
         const icon = btn.querySelector('i');
         if (btn.getAttribute('onclick').includes(field)) {
-            // Update the clicked button
             if (sortMode === 'asc') {
-                icon.className = 'fa-solid fa-sort-up'; // Icon for ascending
+                icon.className = 'fa-solid fa-sort-up'
             } else {
-                icon.className = 'fa-solid fa-sort-down'; // Icon for descending
+                icon.className = 'fa-solid fa-sort-down'
             }
         } else {
-            // Reset other buttons to default icon
             icon.className = 'fa-solid fa-sort';
         }
     });
 
-    // Reload data with new sorting
     readData();
 };
 
@@ -115,17 +107,14 @@ const readData = async () => {
     });
     document.getElementById('users-table-tbody').innerHTML = html;
 
-    // Pagination
     let paginationHTML = '';
 
-    // Tombol previous
     paginationHTML += `
         <li class="page-item ${page === 1 ? 'disabled' : ''}">
             <button class="page-link" onclick="changePage(${page - 1})">&laquo;</button>
         </li>
     `;
 
-    // Tombol halaman
     for (let i = 1; i <= users.pages; i++) {
         paginationHTML += `
         <li class="page-item ${page === i ? 'active' : ''}">
@@ -134,7 +123,6 @@ const readData = async () => {
         `;
     }
 
-    // Tombol next
     paginationHTML += `
         <li class="page-item ${page === users.pages ? 'disabled' : ''}">
             <button class="page-link" onclick="changePage(${page + 1})">&raquo;</button>
@@ -143,7 +131,6 @@ const readData = async () => {
 
     document.getElementById('button-pagination').innerHTML = paginationHTML;
 
-    // Showing data information
     const showingStart = users.offset + 1;
     const showingEnd = Math.min(users.offset + users.data.length, users.total);
     document.querySelector('.pagination-info').textContent = `Showing ${showingStart} to ${showingEnd} of ${users.total} entries`;

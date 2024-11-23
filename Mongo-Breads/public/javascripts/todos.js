@@ -1,9 +1,6 @@
-// Variables
-let id = null, title = '', complete = '', page = 1, limit = 10, sortBy = '_id', sortMode = 'desc';
+let id = null, title = '', complete = '', page = 1, limit = 50, sortBy = '_id', sortMode = 'desc';
 let deadline = '', startdateDeadline = '', enddateDeadline = '';
 let coba = false
-
-// Support functions
 
 function getId(_id) {
     id = _id
@@ -11,7 +8,6 @@ function getId(_id) {
 
 const browseData = () => {
     page = 1
-    console.log('hehehe')
     title = $('#searchTitle').val()
     startdateDeadline = $('#startdateDeadline').val()
     enddateDeadline = $('#enddateDeadline').val()
@@ -39,23 +35,20 @@ const resetData = () => {
     readData(!coba)
 }
 
-let isAscending = true; // Status awal sorting
+let isAscending = true;
 
 const toggleSort = (field) => {
-    // Tetapkan default sorting saat tombol pertama kali diklik
     if (sortBy !== field) {
         sortBy = field;
-        sortMode = 'asc'; // Reset ke ascending
+        sortMode = 'asc';
         isAscending = true;
     } else {
-        // Jika field yang sama, toggle antara ascending dan descending
         sortMode = isAscending ? 'desc' : 'asc';
         isAscending = !isAscending;
     }
 
-    page = 1; // Reset ke halaman pertama saat sorting berubah
+    page = 1;
 
-    // Update tombol sorting di DOM
     const buttonHTML = `
         <button class="btn btn-success" onclick="toggleSort('${field}')">
             <i class="fa-solid ${isAscending ? 'fa-sort-up' : 'fa-sort-down'}"></i> Sort by ${field}
@@ -63,10 +56,8 @@ const toggleSort = (field) => {
     `;
     $('#changeSort').html(buttonHTML);
 
-    // Panggil fungsi untuk memuat ulang data
-    readData(true); // Passing `true` untuk mengganti data lama
+    readData(true);
 };
-
 
 $(window).scroll(function () {
     if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
@@ -75,7 +66,6 @@ $(window).scroll(function () {
         readData(coba)
     }
 })
-
 
 // Main functions
 const readData = async (replaceData) => {
@@ -98,9 +88,6 @@ const readData = async (replaceData) => {
             }
         });
 
-        // Log data untuk debugging
-        console.log('Sorted Data:', todos.data);
-
         // Render data
         let list = '';
         todos.data.forEach((item, index) => {
@@ -121,8 +108,6 @@ const readData = async (replaceData) => {
     `;
         });
 
-
-        // Ganti atau tambahkan data berdasarkan parameter replaceData
         if (replaceData) {
             $('#showTodos').html(list);
         } else {
@@ -163,7 +148,7 @@ const addData = async () => {
         title = ''
         $('#title').val('')
     } catch (e) {
-        alert('Data gagal ditambahkan')
+        alert('data gagal ditambahkan')
     }
 }
 
@@ -180,7 +165,7 @@ const getData = async (_id) => {
         $('#editComplete').prop('checked', todo.complete)
     } catch (e) {
         console.log(e)
-        alert('tidak dapat menampilkan data')
+        alert('data gagal ditampilkan')
     }
 }
 
@@ -216,7 +201,7 @@ const editData = async () => {
 
     } catch (e) {
         console.log(e)
-        alert('Perubahan data gagal')
+        alert('data gagal diubah')
     }
 }
 

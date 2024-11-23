@@ -1,4 +1,3 @@
-const { name } = require('ejs')
 var express = require('express');
 const { ObjectId } = require('mongodb')
 var router = express.Router();

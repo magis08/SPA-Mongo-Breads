@@ -1,181 +1,159 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MongoDB BREADS (Browse, Read, Edit, Add, Delete, Sort)</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<%- include('partials/header') %>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         const executor = '<%= executor %>'
     </script>
-    <script src="/javascripts/todos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 
+    </head>
 
-</head>
-
-<body class="container mt-3">
-    <div class="row mt-3">
-        <div class="col">
-            <div class="card">
-                <div class="card-header d-flex align-items-center">
-                    <a class="btn btn-secondary position-absolute" href="/" role="button">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </a>
-                    <h3 class="mb-0 card-title my-1 flex-grow-1 text-center">Todo List</h3>
-                </div>
-                <div class="card-body">
-                    <!-- Title Field -->
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-4 col-lg-3 align-self-center">
-                            <label for="searchTitle">Title</label>
-                        </div>
-                        <div class="col-12 col-md-8 col-lg-9 align-self-center">
-                            <input type="text" class="form-control" id="searchTitle" placeholder="Insert your title" />
-                        </div>
+    <body class="container mt-3">
+        <div class="row mt-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header d-flex align-items-center">
+                        <a class="btn btn-secondary position-absolute" href="/" role="button">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </a>
+                        <h3 class="mb-0 card-title my-1 flex-grow-1 text-center">Todo List</h3>
                     </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-4 col-lg-3 align-self-center">
+                                <label for="searchTitle">Title</label>
+                            </div>
+                            <div class="col-12 col-md-8 col-lg-9 align-self-center">
+                                <input type="text" class="form-control" id="searchTitle"
+                                    placeholder="Insert your title" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-4 col-lg-3 align-self-center">
+                                <label for="startdateDeadline">Deadline</label>
+                            </div>
+                            <div class="col-12 col-md-3 col-lg-4 align-self-center">
+                                <input type="datetime-local" class="form-control" id="startdateDeadline" />
+                            </div>
+                            <div class="col-12 col-md-2 col-lg-1 align-self-center text-center">
+                                <label for="enddateDeadline">s.d.</label>
+                            </div>
+                            <div class="col-12 col-md-3 col-lg-4 align-self-center">
+                                <input type="datetime-local" class="form-control" id="enddateDeadline" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-4 col-lg-3 align-self-center">
+                                <label for="completeTodo">Complete</label>
+                            </div>
+                            <div class="col-12 col-md-8 col-lg-9 align-self-center">
+                                <select class="form-select" id="completeTodo">
+                                    <option value="" selected disabled>&minus; Select Complete &minus;</option>
+                                    <option value="true">Done</option>
+                                    <option value="false">Not yet</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <!-- Deadline Field -->
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-4 col-lg-3 align-self-center">
-                            <label for="startdateDeadline">Deadline</label>
-                        </div>
-                        <div class="col-12 col-md-3 col-lg-4 align-self-center">
-                            <input type="datetime-local" class="form-control" id="startdateDeadline" />
-                        </div>
-                        <div class="col-12 col-md-2 col-lg-1 align-self-center text-center">
-                            <label for="enddateDeadline">s.d.</label>
-                        </div>
-                        <div class="col-12 col-md-3 col-lg-4 align-self-center">
-                            <input type="datetime-local" class="form-control" id="enddateDeadline" />
-                        </div>
-                    </div>
-
-                    <!-- Complete Field -->
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-4 col-lg-3 align-self-center">
-                            <label for="completeTodo">Complete</label>
-                        </div>
-                        <div class="col-12 col-md-8 col-lg-9 align-self-center">
-                            <select class="form-select" id="completeTodo">
-                                <option value="" selected disabled>&minus; Select Complete &minus;</option>
-                                <option value="true">Done</option>
-                                <option value="false">Not yet</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Buttons -->
-                    <div class="row mt-3">
-                        <div class="col-12 col-md-4 col-lg-3 mb-2 mb-md-0" id="changeSort">
-                            <button type="button" class="btn btn-success w-auto" onclick="toggleSort('deadline')">
-                                <i class="fa-solid fa-sort"></i> Sort by deadline
-                            </button>
-                        </div>
-                        <div class="col-12 col-md-8 col-lg-9 d-flex justify-content-start">
-                            <button type="button" class="btn btn-warning me-2 w-auto" onclick="resetData()">
-                                <i class="fa-solid fa-rotate"></i>
-                            </button>
-                            <button type="button" class="btn btn-info w-auto" onclick="browseData()">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <hr class="m-0">
-
-                <!-- Add Todo -->
-                <div class="bg-light">
-                    <div class="mx-3">
-                        <div class="input-group my-2">
-                            <input type="text" id="title" class="form-control" name="title" placeholder="title" />
-                            <button class="btn btn-outline-primary my-0" onclick="addData()">
-                                <i class="fa-solid fa-circle-down"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Show Todos -->
-                <div class="row m-0">
-                    <ul class="list-group p-0" id="showTodos"></ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-
-<!--Modals-->
-<div class="modal fade" id="edit" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" id="coba">
-            <div class="modal-header">
-                <h5 class="modal-title">Update Todo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="form-user">
-                    <div class="row mb-3">
-                        <label for="title" class="col-sm-2 col-form-label">Title</label>
-                        <div class="col-sm-10">
-                            <input type="title" class="form-control" id="editTitle" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="deadline" class="col-sm-2 col-form-label">Deadline</label>
-                        <div class="col-sm-10">
-                            <input type="datetime-local" class="form-control" name="deadline" id="editDeadline"
-                                required />
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="complete" class="col-sm-2 col-form-label">Complete</label>
-                        <div class="col-sm-10">
-                            <div class="form-check my-2">
-                                <input class="form-check-input" type="checkbox" id="editComplete">
-                                <label class="form-check-label" for="editComplete">
-                                    done
-                                </label>
+                        <!-- Buttons -->
+                        <div class="row mt-3">
+                            <div class="col-12 col-md-4 col-lg-3 mb-2 mb-md-0" id="changeSort">
+                                <button type="button" class="btn btn-success w-auto" onclick="toggleSort('deadline')">
+                                    <i class="fa-solid fa-sort"></i> Sort by deadline
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-8 col-lg-9 d-flex justify-content-start">
+                                <button type="button" class="btn btn-warning me-2 w-auto" onclick="resetData()">
+                                    <i class="fa-solid fa-rotate"></i>
+                                </button>
+                                <button type="button" class="btn btn-info w-auto" onclick="browseData()">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
-                </form>
+                    <hr class="m-0">
+                    <div class="bg-light">
+                        <div class="mx-3">
+                            <div class="input-group my-2">
+                                <input type="text" id="title" class="form-control" name="title" placeholder="title" />
+                                <button class="btn btn-outline-primary my-0" onclick="addData()">
+                                    <i class="fa-solid fa-circle-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-0">
+                        <ul class="list-group p-0" id="showTodos"></ul>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="editData()" data-bs-dismiss="modal">Save
-                    changes</button>
+        </div>
+    </body>
+
+    <!--Modals-->
+    <div class="modal fade" id="edit" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" id="coba">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Todo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-user">
+                        <div class="row mb-3">
+                            <label for="title" class="col-sm-2 col-form-label">Title</label>
+                            <div class="col-sm-10">
+                                <input type="title" class="form-control" id="editTitle" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="deadline" class="col-sm-2 col-form-label">Deadline</label>
+                            <div class="col-sm-10">
+                                <input type="datetime-local" class="form-control" name="deadline" id="editDeadline"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="complete" class="col-sm-2 col-form-label">Complete</label>
+                            <div class="col-sm-10">
+                                <div class="form-check my-2">
+                                    <input class="form-check-input" type="checkbox" id="editComplete">
+                                    <label class="form-check-label" for="editComplete">
+                                        done
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="editData()" data-bs-dismiss="modal">Save
+                        changes</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="delete" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary" onclick="deleteData()"
-                    data-bs-dismiss="modal">Yes</button>
+    <div class="modal fade" id="delete" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" onclick="deleteData()"
+                        data-bs-dismiss="modal">Yes</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
-</body>
 
-</html>
+    <script src="/javascripts/todos.js"></script>
+
+    <%- include('partials/footer') %>
