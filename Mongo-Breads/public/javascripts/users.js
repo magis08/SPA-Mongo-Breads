@@ -137,16 +137,36 @@ const readData = async () => {
 };
 
 const addData = async () => {
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    await fetch("http://localhost:3000/api/users", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, phone }),
-    });
-    readData();
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+
+    if (!name || !phone) {
+        alert('Harap isi data yang benar!');
+        return; 
+    }
+
+    if (!/^\d+$/.test(phone)) {
+        alert('Harap masukkan menggunakan angka pada field phone!');
+        return; 
+    }
+
+    try {
+        await fetch("http://localhost:3000/api/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, phone }),
+        });
+
+        readData();
+
+        document.getElementById('name').value = '';
+        document.getElementById('phone').value = '';
+    } catch (error) {
+        console.error('Error adding data:', error);
+        alert('Terjadi kesalahan saat menambahkan data!');
+    }
 };
 
 const getoneData = async (_id) => {

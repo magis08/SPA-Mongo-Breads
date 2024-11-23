@@ -17,23 +17,29 @@ const browseData = () => {
 }
 
 const resetData = () => {
-    title = ''
-    startdateDeadline = ''
-    enddateDeadline = ''
-    complete = ''
-    $('#searchTitle').val('')
-    $('#startdateDeadline').val('')
-    $('#enddateDeadline').val('')
-    $('#completeTodo').val('')
+    title = '';
+    startdateDeadline = '';
+    enddateDeadline = '';
+    complete = '';
+    sortBy = '_id'; 
+    sortMode = 'desc'; 
+    page = 1;
 
-    sortBy = "_id"
-    sortMode = 'desc'
-    let defaultMode = `
-    <button class="btn btn-success" onclick="sortDesc('deadline')"><i class="fa-solid fa-sort"></i> sort by deadline</button>
-    `
-    $('#changeSort').html(defaultMode)
-    readData(!coba)
-}
+    $('#searchTitle').val('');
+    $('#startdateDeadline').val('');
+    $('#enddateDeadline').val('');
+    $('#completeTodo').val('');
+
+    const defaultSortButton = `
+        <button class="btn btn-success" onclick="toggleSort('deadline')">
+            <i class="fa-solid fa-sort"></i> Sort by deadline
+        </button>
+    `;
+    $('#changeSort').html(defaultSortButton);
+
+    readData(true);
+};
+
 
 let isAscending = true;
 
@@ -90,22 +96,29 @@ const readData = async (replaceData) => {
 
         // Render data
         let list = '';
-        todos.data.forEach((item, index) => {
+        todos.data.forEach((item) => {
+            const formattedDeadline = moment(new Date(item.deadline)).format('DD-MM-YYYY HH:mm');
+            const itemClass = item.complete === false && new Date(`${item.deadline}`).getTime() < new Date().getTime()
+                ? 'alert alert-danger'
+                : item.complete === true
+                    ? 'alert alert-success'
+                    : 'alert alert-secondary';
+
             list += `
-    <div id="${item._id}" class="foot2 ${item.complete === false && new Date(`${item.deadline}`).getTime() < new Date().getTime() ? 'alert alert-danger' : item.complete === true ? 'alert alert-success' : 'alert alert-secondary'}" role="alert">
-        <div class="d-flex justify-content-between align-items-center">
-            <span>${moment(item.deadline).format('DD-MM-YYYY HH:mm')} ${item.title}</span>
-            <div class="d-flex gap-2">
-                <a type="button" class="btn btn-sm btn-outline-primary" onclick="getData('${item._id}')" data-bs-toggle="modal" data-bs-target="#edit">
-                    <i class="fa-solid fa-pencil"></i>
-                </a>
-                <a type="button" class="btn btn-sm btn-outline-danger" onclick="getId('${item._id}')" data-bs-toggle="modal" data-bs-target="#delete">
-                    <i class="fa-solid fa-trash"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-    `;
+                <div id="${item._id}" class="foot2 ${itemClass}" role="alert">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>${formattedDeadline} ${item.title}</span>
+                        <div class="d-flex gap-2">
+                            <a type="button" class="btn btn-sm btn-outline-primary" onclick="getData('${item._id}')" data-bs-toggle="modal" data-bs-target="#edit">
+                                <i class="fa-solid fa-pencil"></i>
+                            </a>
+                            <a type="button" class="btn btn-sm btn-outline-danger" onclick="getId('${item._id}')" data-bs-toggle="modal" data-bs-target="#delete">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
         });
 
         if (replaceData) {
@@ -113,44 +126,71 @@ const readData = async (replaceData) => {
         } else {
             $('#showTodos').append(list);
         }
+
+        if (todos.data.length === 0 && page > 1) {
+            console.log('No more data to load');
+        }
     } catch (e) {
         console.error('Error fetching data:', e);
         alert('Pengambilan data gagal');
     }
 };
-
 readData(coba)
 
 const addData = async () => {
     try {
-        title = $('#title').val()
-        const a_day = 24 * 60 * 60 * 1000
+        const title = $('#title').val().trim();
+
+        if (!title) {
+            alert('Harap masukkan title!');
+            return;
+        }
+
+        const a_day = 24 * 60 * 60 * 1000;
         const todos = await $.ajax({
             url: `/api/todos`,
             method: "POST",
             dataType: "json",
             data: {
                 title,
-                executor
+                executor,
             }
         });
-        let newlist = ''
-        newlist += `
-        <div id="${todos[0]._id}" class="foot2 ${todos[0].complete == false && new Date(`${todos[0].deadline}`).getTime() < new Date().getTime() ? ' alert alert-danger' : todos[0].complete == true ? ' alert alert-success' : ' alert alert-secondary'}" role="alert">
-            ${moment(new Date(Date.now() + a_day)).format('DD-MM-YYYY HH:mm')} ${title}
-            <div>
-            <a type="button" onclick="getData('${todos[0]._id}')" data-bs-toggle="modal" data-bs-target="#edit"><i class="fa-solid fa-pencil"></i></a>
-            <a type="button" onclick="getId('${todos[0]._id}')" data-bs-toggle="modal" data-bs-target="#delete"><i class="fa-solid fa-trash mx-2"></i></a>
+
+        const todo = todos[0];
+
+        const itemClass = todo.complete === false && new Date(todo.deadline).getTime() < new Date().getTime()
+            ? 'alert alert-danger'
+            : todo.complete === true
+                ? 'alert alert-success'
+                : 'alert alert-secondary';
+
+        const formattedDeadline = moment(new Date(Date.now() + a_day)).format('DD-MM-YYYY HH:mm');
+
+        const newElement = `
+            <div id="${todo._id}" class="foot2 ${itemClass}" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>${formattedDeadline} ${todo.title}</span>
+                    <div class="d-flex gap-2">
+                        <a type="button" class="btn btn-sm btn-outline-primary" onclick="getData('${todo._id}')" data-bs-toggle="modal" data-bs-target="#edit">
+                            <i class="fa-solid fa-pencil"></i>
+                        </a>
+                        <a type="button" class="btn btn-sm btn-outline-danger" onclick="getId('${todo._id}')" data-bs-toggle="modal" data-bs-target="#delete">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
-        `
-        $('#showTodos').prepend(newlist)
-        title = ''
-        $('#title').val('')
+        `;
+
+        $('#showTodos').prepend(newElement);
+
+        $('#title').val('');
     } catch (e) {
-        alert('data gagal ditambahkan')
+        console.error('Error adding data:', e);
+        alert('Data gagal ditambahkan');
     }
-}
+};
 
 const getData = async (_id) => {
     try {
@@ -161,7 +201,7 @@ const getData = async (_id) => {
             dataType: "json",
         });
         $('#editTitle').val(todo.title)
-        $('#editDeadline').val(moment(todo.deadline).format('YYYY-MM-DDThh:mm'))
+        $('#editDeadline').val(moment(todo.deadline).format('YYYY-MM-DDTHH:mm'))
         $('#editComplete').prop('checked', todo.complete)
     } catch (e) {
         console.log(e)
@@ -171,10 +211,15 @@ const getData = async (_id) => {
 
 const editData = async () => {
     try {
-        title = $('#editTitle').val()
-        deadline = $('#editDeadline').val()
-        complete = $('#editComplete').prop('checked')
-        const a_day = 24 * 60 * 60 * 1000
+        const title = $('#editTitle').val().trim();
+        const deadline = $('#editDeadline').val();
+        const complete = $('#editComplete').prop('checked');
+
+        if (!title || !deadline) {
+            alert('Harap isi semua data dengan benar!');
+            return;
+        }
+
         const todo = await $.ajax({
             url: `/api/todos/${id}`,
             method: "PUT",
@@ -183,27 +228,43 @@ const editData = async () => {
                 title,
                 executor,
                 deadline,
-                complete: Boolean(complete)
-            }
+                complete: Boolean(complete),
+            },
         });
-        let newData = ''
-        newData += `
-        ${moment(new Date(deadline)).format('DD-MM-YYYY HH:mm')} ${title}
-        <div>
-        <a type="button" onclick="getData('${todo._id}')" data-bs-toggle="modal" data-bs-target="#edit"><i class="fa-solid fa-pencil"></i></a>
-        <a type="button" onclick="getId('${todo._id}')" data-bs-toggle="modal" data-bs-target="#delete"><i class="fa-solid fa-trash mx-2"></i></a>
-        </div>
-        `
-        $(`#${todo._id}`).attr('class', `foot2 ${todo.complete == false && new Date(`${todo.deadline}`).getTime() < new Date().getTime() ? ' alert alert-danger' : todo.complete == true ? ' alert alert-success' : ' alert alert-secondary'}`).html(newData)
-        title = $('#searchTitle').val()
-        if ($('#completeTodo').val()) complete = $('#completeTodo').val()
-        else complete = ''
+
+        const updatedHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <span>${moment(deadline).format('DD-MM-YYYY HH:mm')} ${title}</span>
+                <div class="d-flex gap-2">
+                    <a type="button" class="btn btn-sm btn-outline-primary" onclick="getData('${todo._id}')" data-bs-toggle="modal" data-bs-target="#edit">
+                        <i class="fa-solid fa-pencil"></i>
+                    </a>
+                    <a type="button" class="btn btn-sm btn-outline-danger" onclick="getId('${todo._id}')" data-bs-toggle="modal" data-bs-target="#delete">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        `;
+
+        $(`#${todo._id}`)
+            .attr(
+                'class',
+                `foot2 ${complete
+                    ? 'alert alert-success'
+                    : new Date(deadline).getTime() < new Date().getTime()
+                        ? 'alert alert-danger'
+                        : 'alert alert-secondary'
+                }`
+            )
+            .html(updatedHTML);
+
+        $('#editModal').modal('hide'); 
 
     } catch (e) {
-        console.log(e)
-        alert('data gagal diubah')
+        console.error('Error updating data:', e);
+        alert('Data gagal diubah!');
     }
-}
+};
 
 const deleteData = async () => {
     try {
