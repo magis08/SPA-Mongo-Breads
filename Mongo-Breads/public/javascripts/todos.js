@@ -109,12 +109,12 @@ const readData = async (replaceData) => {
                     <div class="d-flex justify-content-between align-items-center">
                         <span>${formattedDeadline} ${item.title}</span>
                         <div class="d-flex gap-2">
-                            <a type="button" class="btn btn-sm btn-outline-primary" onclick="getData('${item._id}')" data-bs-toggle="modal" data-bs-target="#edit">
-                                <i class="fa-solid fa-pencil"></i>
-                            </a>
-                            <a type="button" class="btn btn-sm btn-outline-danger" onclick="getId('${item._id}')" data-bs-toggle="modal" data-bs-target="#delete">
+                            <button class="btn btn-success"onclick="getData('${item._id}')" data-bs-toggle="modal" data-bs-target="#edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="btn btn-danger" onclick="getId('${item._id}')" data-bs-toggle="modal" data-bs-target="#delete">
                                 <i class="fa-solid fa-trash"></i>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -172,12 +172,12 @@ const addData = async () => {
                 <div class="d-flex justify-content-between align-items-center">
                     <span>${formattedDeadline} ${todo.title}</span>
                     <div class="d-flex gap-2">
-                        <a type="button" class="btn btn-sm btn-outline-primary" onclick="getData('${todo._id}')" data-bs-toggle="modal" data-bs-target="#edit">
+                        <button class="btn btn-success" onclick="getData('${todo._id}')" data-bs-toggle="modal" data-bs-target="#edit">
                             <i class="fa-solid fa-pencil"></i>
-                        </a>
-                        <a type="button" class="btn btn-sm btn-outline-danger" onclick="getId('${todo._id}')" data-bs-toggle="modal" data-bs-target="#delete">
+                        </button>
+                        <button class="btn btn-danger"onclick="getId('${todo._id}')" data-bs-toggle="modal" data-bs-target="#delete">
                             <i class="fa-solid fa-trash"></i>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -236,12 +236,12 @@ const editData = async () => {
             <div class="d-flex justify-content-between align-items-center">
                 <span>${moment(deadline).format('DD-MM-YYYY HH:mm')} ${title}</span>
                 <div class="d-flex gap-2">
-                    <a type="button" class="btn btn-sm btn-outline-primary" onclick="getData('${todo._id}')" data-bs-toggle="modal" data-bs-target="#edit">
-                        <i class="fa-solid fa-pencil"></i>
-                    </a>
-                    <a type="button" class="btn btn-sm btn-outline-danger" onclick="getId('${todo._id}')" data-bs-toggle="modal" data-bs-target="#delete">
+                    <button class="btn btn-success" onclick="getData('${todo._id}')" data-bs-toggle="modal" data-bs-target="#edit">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="btn btn-danger"onclick="getId('${todo._id}')" data-bs-toggle="modal" data-bs-target="#delete">
                         <i class="fa-solid fa-trash"></i>
-                    </a>
+                    </button>
                 </div>
             </div>
         `;

@@ -26,7 +26,7 @@
                         <button class="btn btn-secondary" type="button" onclick="browse()">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
-                        <button class="btn btn-warning" type="button" onclick="clear()">
+                        <button class="btn btn-warning" type="button" onclick="console.log('clear button clicked');clear()">
                             <i class="fa-solid fa-rotate"></i>
                         </button>
                     </div>
@@ -56,12 +56,14 @@
             </div>
         </div>
         <div class="card-footer d-flex flex-column flex-md-row justify-content-between align-items-center">
+            
             <button type="button" class="btn btn-primary mb-2 mb-md-0" id="addButton" data-bs-toggle="modal"
                 data-bs-target="#addData">
                 <i class="fa-solid fa-plus"></i>
             </button>
-
             <div class="d-flex flex-column flex-md-row align-items-center">
+
+            <div class="pagination-info text-center mb-2"></div>
                 <div class="me-3 mb-2 mb-md-0 text-center text-md-start" id="pagination"></div>
                 <nav aria-label="Page navigation">
                     <ul class="pagination" id="button-pagination">
@@ -126,7 +128,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure?</p>
+                <p>Apakah kamu yakin untuk hapus data ini?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>

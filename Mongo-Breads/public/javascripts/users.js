@@ -1,4 +1,4 @@
-let id = null, condition = null, page = 1, query = '', limit = 5, sortBy = '_id', sortMode = 'asc';
+let id = null, condition = null, page = 1, query = '', limit = 5, sortBy = '_id', sortMode = 'desc';
 
 function getId(_id) {
     id = _id;
@@ -38,16 +38,16 @@ const sortNameDesc = (name) => {
 
 const toggleSort = (field) => {
     if (sortBy === field) {
-        sortMode = sortMode === 'asc' ? 'desc' : 'asc';
+        sortMode = sortMode === 'desc' ? 'asc' : 'desc';
     } else {
         sortBy = field;
-        sortMode = 'asc';
+        sortMode = 'desc';
     }
 
     document.querySelectorAll('th button').forEach((btn) => {
         const icon = btn.querySelector('i');
         if (btn.getAttribute('onclick').includes(field)) {
-            if (sortMode === 'asc') {
+            if (sortMode === 'desc') {
                 icon.className = 'fa-solid fa-sort-up'
             } else {
                 icon.className = 'fa-solid fa-sort-down'
@@ -70,6 +70,19 @@ const browse = () => {
 const clear = () => {
     query = '';
     document.getElementById('inputData').value = '';
+    page = 1
+    sortBy = '_id'
+    sortMode = 'desc'
+
+    document.querySelectorAll('th button').forEach((btn) => {
+        const icon = btn.querySelector('i')
+        if(btn.getAttribute('onclick').includes('_id')) {
+            icon.className = 'fa-solid fa-ort-up'
+        } else {
+            icon.className = 'fa-solid fa-sort'
+        }
+    })
+    console.log("Query di reset", query)
     readData();
 };
 
@@ -202,3 +215,11 @@ const pageTodos = async (id) => {
     const response = await fetch(`http://localhost:3000/users/${id}/todos`)
     const todos = await response.json()
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const clearButton = document.querySelector(".btn-warning");
+    clearButton.addEventListener("click", () => {
+        console.log("Clear button clicked via addEventListener");
+        clear();
+    });
+});
