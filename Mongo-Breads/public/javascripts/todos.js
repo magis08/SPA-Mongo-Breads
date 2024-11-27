@@ -1,20 +1,20 @@
 let id = null, title = '', complete = '', page = 1, limit = 50, sortBy = '_id', sortMode = 'desc';
 let deadline = '', startdateDeadline = '', enddateDeadline = '';
-let coba = false
+let tes = false
 
 function getId(_id) {
     id = _id
 }
 
 const browseData = () => {
-    page = 1
-    title = $('#searchTitle').val()
-    startdateDeadline = $('#startdateDeadline').val()
-    enddateDeadline = $('#enddateDeadline').val()
-    if ($('#completeTodo').val()) complete = $('#completeTodo').val()
-    else complete = ''
-    readData(!coba)
-}
+    page = 1;
+    title = $('#searchTitle').val();
+    startdateDeadline = $('#startdateDeadline').val();
+    enddateDeadline = $('#enddateDeadline').val();
+    complete = $('#completeTodo').val() || '';
+    readData(!tes);
+};
+
 
 const resetData = () => {
     title = '';
@@ -69,7 +69,7 @@ $(window).scroll(function () {
     if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
         page++
         console.log(page)
-        readData(coba)
+        readData(tes)
     }
 })
 
@@ -109,7 +109,7 @@ const readData = async (replaceData) => {
                     <div class="d-flex justify-content-between align-items-center">
                         <span>${formattedDeadline} ${item.title}</span>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-success"onclick="getData('${item._id}')" data-bs-toggle="modal" data-bs-target="#edit">
+                            <button class="btn btn-success" onclick="getData('${item._id}')" data-bs-toggle="modal" data-bs-target="#edit">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <button class="btn btn-danger" onclick="getId('${item._id}')" data-bs-toggle="modal" data-bs-target="#delete">
@@ -135,7 +135,8 @@ const readData = async (replaceData) => {
         alert('Pengambilan data gagal');
     }
 };
-readData(coba)
+
+readData(tes)
 
 const addData = async () => {
     try {
@@ -232,6 +233,8 @@ const editData = async () => {
             },
         });
 
+        browseData();
+
         const updatedHTML = `
             <div class="d-flex justify-content-between align-items-center">
                 <span>${moment(deadline).format('DD-MM-YYYY HH:mm')} ${title}</span>
@@ -239,7 +242,7 @@ const editData = async () => {
                     <button class="btn btn-success" onclick="getData('${todo._id}')" data-bs-toggle="modal" data-bs-target="#edit">
                         <i class="fa-solid fa-pen"></i>
                     </button>
-                    <button class="btn btn-danger"onclick="getId('${todo._id}')" data-bs-toggle="modal" data-bs-target="#delete">
+                    <button class="btn btn-danger" onclick="getId('${todo._id}')" data-bs-toggle="modal" data-bs-target="#delete">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
@@ -258,13 +261,14 @@ const editData = async () => {
             )
             .html(updatedHTML);
 
-        $('#editModal').modal('hide'); 
+        $('#editModal').modal('hide');
 
     } catch (e) {
         console.error('Error updating data:', e);
         alert('Data gagal diubah!');
     }
 };
+
 
 const deleteData = async () => {
     try {

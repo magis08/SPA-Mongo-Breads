@@ -38,16 +38,16 @@ const sortNameDesc = (name) => {
 
 const toggleSort = (field) => {
     if (sortBy === field) {
-        sortMode = sortMode === 'desc' ? 'asc' : 'desc';
+        sortMode = sortMode === 'asc' ? 'desc' : 'asc';
     } else {
         sortBy = field;
-        sortMode = 'desc';
+        sortMode = 'asc';
     }
 
     document.querySelectorAll('th button').forEach((btn) => {
         const icon = btn.querySelector('i');
         if (btn.getAttribute('onclick').includes(field)) {
-            if (sortMode === 'desc') {
+            if (sortMode === 'asc') {
                 icon.className = 'fa-solid fa-sort-up'
             } else {
                 icon.className = 'fa-solid fa-sort-down'
@@ -59,7 +59,6 @@ const toggleSort = (field) => {
 
     readData();
 };
-
 
 const browse = () => {
     query = document.getElementById('inputData').value.trim();
